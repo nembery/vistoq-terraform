@@ -1,0 +1,6 @@
+.terraform
+.idea
+venv
+terraform.tfstate
+terraform.tfstate.backup
+local.env
