@@ -11,7 +11,7 @@ terraform {
   }
 }
 
-variable "sshkey" {}
+//variable "sshkey" {}
 variable "sshkeypub" {}
 
 resource "google_compute_firewall" "default" {
@@ -27,7 +27,9 @@ resource "google_compute_firewall" "default" {
     ports = [
       "80",
       "8080",
-      "443"]
+      "443",
+      "3978"
+    ]
   }
 }
 
@@ -42,7 +44,9 @@ resource "google_compute_address" "panorana_ext" {
 
 resource "google_compute_instance" "panorama" {
   name = "panorama-813"
-  machine_type = "custom-4-16384"
+  // machine_type = "custom-4-16384"
+  // n1-highmem-4 == 4 vcpu and 26GB of RAM
+  machine_type = "n1-highmem-4"
   zone = "us-east4-b"
 
   timeouts {
@@ -112,7 +116,7 @@ resource "google_compute_instance" "controller" {
 
   }
 
-  metadata_startup_script = "echo 'panorama ${google_compute_address.panorana_ext.address}' >> /etc/hosts"
+  metadata_startup_script = "echo '${google_compute_address.panorana_ext.address} panorama' >> /etc/hosts"
 
   service_account {
     scopes = [
